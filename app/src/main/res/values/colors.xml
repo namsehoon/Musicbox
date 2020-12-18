@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- 내가 사용할 컬러 변수  -->
+    <color name="colorPrimary">#E53935</color>
+    <color name="colorPrimaryDark">#F44336</color>
+    <color name="colorAccent">#69F0AE</color>
+    <color name="darkGray">#FF434343</color>
+
 </resources>
