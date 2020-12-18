@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button prevBtn;
     private Button playBtn;
     private Button nextBtn;
+    private Thread thread;
 
 
     @Override
@@ -114,10 +115,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(mediaPlayer != null){
             mediaPlayer.start();
             playBtn.setBackgroundResource(android.R.drawable.ic_media_pause);
+            updateThread();
         }
     }
     public void musicNext(){
         if(mediaPlayer != null){
         }
+    }
+
+    //스레드 : 프로세스내에서 순차적으로 실행되는 실행 흐름
+    public void updateThread(){
+        thread = new Thread(){
+            @Override
+            public void run() {
+                //runOnUiThread : 현재 스레드가 UI 스레드라면 UI 자원을 사용하는 행동에 대해서는 즉시 실행
+                //runable 인터페이스. run만 쓰는 경우.
+                try {
+                    while(mediaPlayer != null && mediaPlayer.isPlaying()){
+
+                        //1초
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int newPosition = mediaPlayer.getCurrentPosition();
+                                int newMax = mediaPlayer.getDuration();
+                                seekBar.setMax(newMax);
+                                seekBar.setProgress(newPosition);
+
+                                // update text
+                                lefttime.setText(String.valueOf(new java.text.SimpleDateFormat("mm:ss")
+                                        .format(new Date(mediaPlayer.getCurrentPosition()))));
+
+                                righttime.setText(String.valueOf(new java.text.SimpleDateFormat("mm:ss")
+                                        .format(new Date(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()))));
+                            }
+                    });
+                }} catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        thread.start();
     }
 }
