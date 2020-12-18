@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.prevbtn:
-
+                musicReset();
                 break;
             case R.id.playbtn:
                 //음악이 실행중이라면 버튼을 눌렀을떄, 정지. 아니면 실행
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.nextbtn:
-
+                musicNext();
                 break;
         }
     }
@@ -120,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void musicNext(){
         if(mediaPlayer != null){
+            mediaPlayer.seekTo(mediaPlayer.getDuration());
+        }
+    }
+
+    public void musicReset(){
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.seekTo(0);
         }
     }
 
@@ -158,5 +165,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         thread.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        thread.interrupt();
+        thread = null;
+        super.onDestroy();
     }
 }
